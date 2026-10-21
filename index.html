@@ -688,7 +688,7 @@
     .attachment { border-radius: 14px; border-color: var(--card-border); background: rgba(0,0,0,.13); }
     html.light-mode .attachment { background: rgba(26, 53, 40, .025); }
     .attachment.image img, .attachment.video video { max-height: 430px; object-fit: contain; background: rgba(0,0,0,.18); }
-    .attachment.image, .attachment.video { display: flex; flex-direction: column; align-items: center; }
+    .attachment.image, .attachment.video { display: flex; flex-direction: column; align-items: center; width: fit-content; max-width: 100%; justify-self: center; }
     .attachment.image img, .attachment.video video { width: auto; max-width: 100%; height: auto; margin: 0 auto; }
     .attachment-caption { align-self: stretch; }
     .attachment.audio audio { padding: 12px; }
