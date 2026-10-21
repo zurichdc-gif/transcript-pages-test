@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Transcript do atendimento" />
+  <title>Ticket de demonstração</title>
+  <style>
+    :root {
+      --page-bg: #051d21;
+      --page-bg-2: #0d2d2f;
+      --panel-bg: rgba(11, 24, 27, 0.72);
+      --panel-soft: rgba(17, 31, 33, 0.62);
+      --paper: #eed7b0;
+      --paper-2: #f7e9d2;
+      --ink: #1a1a1a;
+      --muted: rgba(23, 28, 30, 0.7);
+      --accent: #dd6d45;
+      --accent-2: #f2b26d;
+      --accent-3: #d6f5ea;
+      --button-dark: #0d1d1d;
+      --line: rgba(255, 255, 255, 0.18);
+      --text: #f3efe8;
+      --text-soft: rgba(243, 239, 232, 0.7);
+      --nav-bg: rgba(8, 17, 18, 0.75);
+      --input-bg: rgba(255, 255, 255, 0.04);
+      --card-bg: rgba(12, 22, 25, 0.8);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --message-bg: rgba(255,255,255,0.02);
+      --message-border: rgba(255,255,255,0.08);
+      --message-hover: rgba(255,255,255,0.04);
+      --primary: #d36a43;
+      --primary-hover: #bf5a34;
+      --shadow: rgba(0, 0, 0, 0.22);
+    }
+
+    html.light-mode {
+      --page-bg: #dfeae9;
+      --page-bg-2: #b9d5d1;
+      --panel-bg: rgba(255, 255, 255, 0.7);
+      --panel-soft: rgba(245, 247, 246, 0.78);
+      --paper: #f5e4c9;
+      --paper-2: #f9efe1;
+      --ink: #102a2f;
+      --muted: rgba(16, 42, 47, 0.72);
+      --accent: #c9633f;
+      --accent-2: #d19b53;
+      --accent-3: #245a5c;
+      --button-dark: #0f2a2d;
+      --line: rgba(16, 42, 47, 0.1);
+      --text: #112b32;
+      --text-soft: rgba(17, 43, 50, 0.72);
+      --nav-bg: rgba(255,255,255,0.72);
+      --input-bg: rgba(15, 30, 34, 0.04);
+      --card-bg: rgba(255, 255, 255, 0.8);
+      --card-border: rgba(16, 42, 47, 0.08);
+      --message-bg: rgba(255,255,255,0.62);
+      --message-border: rgba(16, 42, 47, 0.08);
+      --message-hover: rgba(255,255,255,0.9);
+      --primary: #bc5a34;
+      --primary-hover: #9d4d2c;
+      --shadow: rgba(15, 42, 45, 0.12);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      font-family: Georgia, 'Times New Roman', serif;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,0.04), transparent 22%),
+        linear-gradient(135deg, var(--page-bg) 0%, var(--page-bg-2) 50%, var(--page-bg) 100%);
+      color: var(--text);
+      transition: background 0.3s ease, color 0.3s ease;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.02), rgba(255,255,255,0.02)),
+        repeating-linear-gradient(
+          0deg,
+          rgba(255,255,255,0.015),
+          rgba(255,255,255,0.015) 1px,
+          transparent 1px,
+          transparent 4px
+        );
+      mix-blend-mode: soft-light;
+    }
+
+    a { color: inherit; }
+
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      backdrop-filter: blur(12px);
+      background: var(--nav-bg);
+      border-bottom: 1px solid var(--line);
+      transition: background 0.3s ease, border-color 0.3s ease;
+    }
+
+    .header-content {
+      max-width: 1520px;
+      margin: 0 auto;
+      padding: 18px 32px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 22px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      font-size: 1.1rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--text);
+      text-decoration: none;
+      font-family: Georgia, 'Times New Roman', serif;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+
+    .brand span {
+      display: inline-block;
+      transform: translateY(-1px);
+      color: var(--accent-2);
+    }
+
+    .brand small {
+      display: block;
+      font-size: 0.48rem;
+      letter-spacing: 0.18em;
+      opacity: 0.8;
+      margin-top: 2px;
+    }
+
+    .topnav {
+      display: none;
+    }
+
+    .topnav a {
+      display: none;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .theme-toggle, .primary-btn, .ghost-btn, .mini-btn {
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: transform 0.2s ease, opacity 0.2s ease, background 0.2s ease;
+    }
+
+    .theme-toggle {
+      min-width: 42px;
+      height: 42px;
+      background: rgba(255,255,255,0.06);
+      color: var(--text);
+      font-size: 1rem;
+      border-color: var(--line);
+    }
+
+    .primary-btn, .ghost-btn {
+      padding: 10px 16px;
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .primary-btn {
+      background: linear-gradient(135deg, var(--accent) 0%, #b94f2c 100%);
+      color: #fff;
+      border-color: rgba(255,255,255,0.08);
+      box-shadow: 0 8px 20px rgba(185,79,44,0.28);
+    }
+
+    .ghost-btn {
+      background: transparent;
+      color: var(--text);
+      border-color: var(--line);
+    }
+
+    .theme-toggle:hover, .primary-btn:hover, .ghost-btn:hover, .mini-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px 32px 48px;
+    }
+
+    .hero { display: none; }
+
+    .transcript-panel {
+      background: var(--panel-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      box-shadow: 0 20px 40px var(--shadow);
+      padding: 18px 20px 22px;
+      margin-top: 18px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .transcript-panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), transparent);
+      pointer-events: none;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 1;
+    }
+
+    .panel-header h2 {
+      margin: 0;
+      font-size: 1.2rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text);
+      font-family: Georgia, 'Times New Roman', serif;
+    }
+
+    .panel-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .panel-actions .control-btn {
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      padding: 8px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 0.82rem;
+      font-family: inherit;
+    }
+
+    .stats-bar {
+      position: relative;
+      z-index: 1;
+      margin-bottom: 16px;
+      padding: 12px 14px;
+      background: rgba(143, 182, 140, 0.12);
+      border: 1px solid rgba(143, 182, 140, 0.2);
+      border-radius: 10px;
+      color: var(--text);
+      text-align: center;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .stats-bar.empty {
+      background: rgba(206, 102, 87, 0.12);
+      border-color: rgba(206, 102, 87, 0.22);
+    }
+
+    .filters {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      margin-bottom: 18px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .filter-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-soft);
+      font-weight: 700;
+    }
+
+    .filter-select {
+      width: 100%;
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 0.92rem;
+      font-family: inherit;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .filter-select:hover {
+      border-color: var(--primary);
+      background: rgba(255,255,255,0.05);
+    }
+
+    .filter-select:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: rgba(255,255,255,0.08);
+      box-shadow: 0 0 0 3px rgba(211, 106, 67, 0.12);
+    }
+
+    .filter-select option {
+      background: var(--surface);
+      color: var(--text);
+    }
+
+    .messages {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .message-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      background: var(--message-bg);
+      border: 1px solid var(--message-border);
+      border-radius: 14px;
+      padding: 16px 14px;
+      transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+    }
+
+    .message-row:hover {
+      background: var(--message-hover);
+      border-color: rgba(211, 106, 67, 0.35);
+      transform: translateY(-1px);
+    }
+
+    .message-row.hidden { display: none; }
+
+    .avatar-wrap {
+      width: 46px;
+      height: 46px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 2px solid rgba(255,255,255,0.08);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.12);
+    }
+
+    .avatar-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .message-body { flex: 1; min-width: 0; }
+
+    .message-header {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+
+    .user-name {
+      font-size: 0.96rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+    }
+
+    .display-name {
+      font-size: 0.78rem;
+      color: var(--text-soft);
+      font-style: italic;
+    }
+
+    .message-time {
+      margin-left: auto;
+      font-size: 0.75rem;
+      color: var(--text-soft);
+      letter-spacing: 0.04em;
+    }
+
+    .message-content {
+      color: var(--text);
+      font-size: 0.98rem;
+      line-height: 1.6;
+      word-break: break-word;
+    }
+
+    .message-content a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .message-content a:hover { text-decoration: underline; }
+
+    .empty-state {
+      color: var(--text-soft);
+      font-style: italic;
+    }
+
+    .attachments, .embeds {
+      margin-top: 12px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .attachment {
+      position: relative;
+      overflow: hidden;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+      background: rgba(255,255,255,0.02);
+    }
+
+    .attachment.image img,
+    .attachment.video video {
+      display: block;
+      width: 100%;
+      max-height: 420px;
+      object-fit: cover;
+      border-radius: 12px;
+    }
+
+    .attachment.link {
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .attachment.link a {
+      color: var(--accent);
+      text-decoration: none;
+      word-break: break-word;
+    }
+
+    .attachment-download-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 34px;
+      height: 34px;
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 50%;
+      background: rgba(0,0,0,0.5);
+      color: #fff;
+      cursor: pointer;
+      font-size: 1rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .message-embed {
+      border-left: 3px solid var(--accent);
+      background: rgba(255,255,255,0.02);
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+
+    .embed-title {
+      font-size: 0.96rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .embed-description,
+    .embed-field span,
+    .embed-field strong,
+    .embed-url {
+      color: var(--text);
+    }
+
+    .embed-fields { display: grid; gap: 8px; } .embed-image, .embed-thumbnail { display: block; max-width: 100%; max-height: 480px; object-fit: contain; border-radius: 10px; margin-top: 10px; }
+    .embed-field { border-top: 1px solid var(--card-border); padding-top: 8px; }
+    .embed-field strong { display: block; margin-bottom: 2px; }
+    .fab-scroll {
+      position: fixed;
+      right: 26px;
+      bottom: 26px;
+      width: 52px;
+      height: 52px;
+      border: none;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+      color: #fff;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      cursor: pointer;
+      box-shadow: 0 12px 22px rgba(0,0,0,0.25);
+      z-index: 60;
+    }
+
+    body.scroll-visible .fab-scroll { display: flex; }
+
+    @media (max-width: 640px) {
+      .header-content, .container {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+    }
+
+    @media print {
+      .header, .fab-scroll, .filters, .panel-actions, .search-bar { display: none !important; }
+      .container { padding-top: 12px; }
+      .transcript-panel { box-shadow: none; }
+      .message-row { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-content">
+      <a href="#" class="brand">
+        <span>SunnyValley</span>
+      </a>
+
+      <div class="header-actions">
+        <button class="theme-toggle" id="themeToggle" title="Alternar tema" type="button">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="transcript-panel" id="transcript">
+      <div class="panel-header">
+        <h2>Transcript do atendimento</h2>
+      </div>
+
+      <div class="filters">
+        <div class="filter-group">
+          <label class="filter-label" for="userFilter">Filtrar por usuário</label>
+          <select class="filter-select" id="userFilter">
+            <option value="">Todos os usuários</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-label" for="attachmentFilter">Tipo de mensagem</label>
+          <select class="filter-select" id="attachmentFilter">
+            <option value="">Todas</option>
+            <option value="with-attachments">Com anexos</option>
+            <option value="without-attachments">Sem anexos</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-label" for="searchInput">Pesquisar</label>
+          <input class="filter-select" id="searchInput" type="text" placeholder="Buscar no transcript..." />
+        </div>
+      </div>
+
+      <div class="stats-bar" id="statsBar">Exibindo 0 mensagens</div>
+
+      <section class="messages" id="transcriptMessages">
+        
+    <article class="message-row" data-author="Membro de teste" data-searchable="membro de teste membro de teste olá! este transcript é fictício e serve para testar a leitura das mensagens e dos anexos. foto-teste.jpg" data-has-attachments="true">
+      <div class="avatar-wrap">
+        <img src="https://cdn.discordapp.com/embed/avatars/0.png" alt="Avatar de Membro de teste" loading="lazy" crossorigin="anonymous" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 40 40%22%3E%3Ccircle cx=%2220%22 cy=%2220%22 r=%2220%22 fill=%22%23ccc%22/%3E%3C/svg%3E';" />
+      </div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="user-name">Membro de teste</span>
+          <span class="display-name">(Membro de teste)</span>
+          <span class="message-time">21/10/2026, 01:58</span>
+        </div>
+        <div class="message-content">Olá! Este transcript é fictício e serve para testar a leitura das mensagens e dos anexos.</div>
+        <div class="attachments"><div class="attachment image" data-url="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&amp;fit=crop&amp;w=1000&amp;q=80" data-name="foto-teste.jpg" data-type="image" id="attachment-test-user-1-0">
+        <img id="img-attachment-test-user-1-0" src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1000&q=80" alt="foto-teste.jpg" loading="lazy" />
+        <div id="img-attachment-test-user-1-0-fallback" style="display:none; padding: 12px; text-align: center; color: var(--text-soft); font-size: 0.9rem;">❌ Imagem indisponível</div>
+        <button class="attachment-download-btn" onclick="downloadMedia('attachment-test-user-1-0')" title="Baixar">⬇️</button>
+      </div></div>
+        
+      </div>
+    </article>
+  
+    <article class="message-row" data-author="Staff de teste" data-searchable="staff de teste staff de teste teste de gif e imagem incorporada. todo o conteúdo desta página é demonstração. gif-teste.gif" data-has-attachments="true">
+      <div class="avatar-wrap">
+        <img src="https://cdn.discordapp.com/embed/avatars/0.png" alt="Avatar de Staff de teste" loading="lazy" crossorigin="anonymous" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 40 40%22%3E%3Ccircle cx=%2220%22 cy=%2220%22 r=%2220%22 fill=%22%23ccc%22/%3E%3C/svg%3E';" />
+      </div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="user-name">Staff de teste</span>
+          <span class="display-name">(Staff de teste)</span>
+          <span class="message-time">21/10/2026, 02:00</span>
+        </div>
+        <div class="message-content">Teste de GIF e imagem incorporada. Todo o conteúdo desta página é demonstração.</div>
+        <div class="attachments"><div class="attachment image" data-url="https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif" data-name="gif-teste.gif" data-type="image" id="attachment-test-staff-2-0">
+        <img id="img-attachment-test-staff-2-0" src="https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif" alt="gif-teste.gif" loading="lazy" />
+        <div id="img-attachment-test-staff-2-0-fallback" style="display:none; padding: 12px; text-align: center; color: var(--text-soft); font-size: 0.9rem;">❌ Imagem indisponível</div>
+        <button class="attachment-download-btn" onclick="downloadMedia('attachment-test-staff-2-0')" title="Baixar">⬇️</button>
+      </div></div>
+        <div class="embeds">
+      <div class="message-embed">
+        <div class="embed-title">Imagem incorporada de teste</div>
+        
+        <div class="embed-description">Exemplo visual fictício.</div>
+        <a class="embed-media-link" href="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&amp;fit=crop&amp;w=1000&amp;q=80" target="_blank" rel="noreferrer noopener"><img class="embed-image" src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&amp;fit=crop&amp;w=1000&amp;q=80" alt="Imagem incorporada" loading="lazy" /></a>
+      </div>
+    </div>
+      </div>
+    </article>
+  
+      </section>
+    </section>
+  </main>
+
+  <button class="fab-scroll" type="button" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" aria-label="Voltar ao topo">↑</button>
+
+  <script>
+    const searchInput = document.getElementById('searchInput');
+    const userFilter = document.getElementById('userFilter');
+    const attachmentFilter = document.getElementById('attachmentFilter');
+    const themeToggle = document.getElementById('themeToggle');
+    const statsBar = document.getElementById('statsBar');
+
+    const applyTheme = (nextTheme) => {
+      const isLight = nextTheme === 'light';
+      document.documentElement.classList.toggle('light-mode', isLight);
+      if (themeToggle) {
+        themeToggle.textContent = isLight ? '☀️' : '🌙';
+        themeToggle.setAttribute('aria-label', isLight ? 'Ativar modo escuro' : 'Ativar modo claro');
+        themeToggle.title = isLight ? 'Ativar modo escuro' : 'Ativar modo claro';
+      }
+    };
+
+    try {
+      const savedTheme = localStorage.getItem('transcriptTheme') || 'dark';
+      applyTheme(savedTheme === 'light' ? 'light' : 'dark');
+    } catch (error) {
+      applyTheme('dark');
+    }
+
+    if (themeToggle) {
+      themeToggle.addEventListener('click', () => {
+        const nextTheme = document.documentElement.classList.contains('light-mode') ? 'dark' : 'light';
+        try {
+          localStorage.setItem('transcriptTheme', nextTheme);
+        } catch (error) {
+          // Ignora falhas de armazenamento e mantém a troca no cliente
+        }
+        applyTheme(nextTheme);
+      });
+    }
+
+    (() => {
+      const users = new Set();
+      document.querySelectorAll('.message-row').forEach((row) => {
+        const author = row.dataset.author;
+        if (author) users.add(author);
+      });
+
+      [...users].sort().forEach((user) => {
+        const option = document.createElement('option');
+        option.value = user;
+        option.textContent = user;
+        userFilter.appendChild(option);
+      });
+    })();
+
+    const applyFilters = () => {
+      const searchTerm = (searchInput.value || '').toLowerCase().trim();
+      const selectedUser = userFilter.value;
+      const attachmentFilterValue = attachmentFilter.value;
+      let visibleCount = 0;
+      const rows = [...document.querySelectorAll('.message-row')];
+      const totalCount = rows.length;
+
+      rows.forEach((row) => {
+        let visible = true;
+
+        if (searchTerm) {
+          const searchable = (row.dataset.searchable || '').toLowerCase();
+          visible = searchable.includes(searchTerm);
+        }
+
+        if (selectedUser && row.dataset.author !== selectedUser) {
+          visible = false;
+        }
+
+        const hasAttachments = row.dataset.hasAttachments === 'true';
+        if (attachmentFilterValue === 'with-attachments' && !hasAttachments) visible = false;
+        if (attachmentFilterValue === 'without-attachments' && hasAttachments) visible = false;
+
+        row.classList.toggle('hidden', !visible);
+        if (visible) visibleCount += 1;
+      });
+
+      const text = totalCount === 0
+        ? 'Nenhuma mensagem no transcript'
+        : visibleCount === totalCount
+          ? totalCount + ' mensagens no transcript'
+          : visibleCount + ' de ' + totalCount + ' mensagens no transcript';
+
+      statsBar.textContent = text;
+      statsBar.classList.toggle('empty', visibleCount === 0);
+    };
+
+    searchInput.addEventListener('input', applyFilters);
+    userFilter.addEventListener('change', applyFilters);
+    attachmentFilter.addEventListener('change', applyFilters);
+
+    window.addEventListener('scroll', () => {
+      document.body.classList.toggle('scroll-visible', window.scrollY > 250);
+    });
+
+    window.downloadMedia = async function (attachmentId) {
+      const attachment = [...document.querySelectorAll('.attachment')].find((item) => {
+        const targetId = item.id || item.getAttribute('data-id');
+        return targetId === attachmentId;
+      }) || document.querySelector('.attachment');
+
+      if (!attachment) {
+        alert('❌ Arquivo não encontrado.');
+        return;
+      }
+
+      const url = attachment.dataset.url;
+      const name = attachment.dataset.name || 'arquivo';
+
+      if (!url) {
+        alert('❌ URL inválida.');
+        return;
+      }
+
+      try {
+        const response = await fetch(url, { mode: 'cors', credentials: 'omit' });
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+        const blob = await response.blob();
+        const downloadUrl = URL.createObjectURL(blob);
+        const anchor = document.createElement('a');
+        anchor.href = downloadUrl;
+        anchor.download = name;
+        document.body.appendChild(anchor);
+        anchor.click();
+        document.body.removeChild(anchor);
+        setTimeout(() => URL.revokeObjectURL(downloadUrl), 100);
+      } catch (error) {
+        console.error('Erro ao baixar mídia:', error);
+        alert('⚠️ Não foi possível baixar. Abrindo em nova aba...');
+        window.open(url, '_blank');
+      }
+    };
+
+    // Configurar event listeners para imagens com falha
+    document.querySelectorAll('.attachment.image img').forEach((img) => {
+      if (!img.id) return;
+      const fallbackId = img.id + '-fallback';
+      const fallbackEl = document.getElementById(fallbackId);
+      
+      if (fallbackEl) {
+        img.addEventListener('error', () => {
+          img.style.display = 'none';
+          fallbackEl.style.display = 'block';
+        }, { once: true });
+      }
+    });
+
+    // Configurar event listeners para vídeos com falha
+    document.querySelectorAll('.attachment.video video').forEach((video) => {
+      if (!video.id) return;
+      const containerEl = video.closest('.attachment.video');
+      if (!containerEl) return;
+      
+      const errorEl = containerEl.querySelector('.video-error');
+      if (errorEl) {
+        video.addEventListener('error', () => {
+          video.style.display = 'none';
+          errorEl.style.display = 'block';
+        }, { once: true });
+      }
+    });
+
+    applyFilters();
+</body>
+</html>
