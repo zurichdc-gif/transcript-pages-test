@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Transcript do atendimento" />
-  <title>Ticket de demonstração</title>
+  <meta name="description" content="Histórico completo do atendimento SunnyValley com mensagens, anexos e detalhes do ticket." />
+  <title>Histórico do atendimento | SunnyValley</title>
   <style>
     :root {
       --page-bg: #051d21;
@@ -688,6 +688,9 @@
     .attachment { border-radius: 14px; border-color: var(--card-border); background: rgba(0,0,0,.13); }
     html.light-mode .attachment { background: rgba(26, 53, 40, .025); }
     .attachment.image img, .attachment.video video { max-height: 430px; object-fit: contain; background: rgba(0,0,0,.18); }
+    .attachment.image, .attachment.video { display: flex; flex-direction: column; align-items: center; }
+    .attachment.image img, .attachment.video video { width: auto; max-width: 100%; height: auto; margin: 0 auto; }
+    .attachment-caption { align-self: stretch; }
     .attachment.audio audio { padding: 12px; }
     .attachment-caption { padding: 9px 12px; color: var(--text-soft); font-size: .72rem; border-top: 1px solid var(--card-border); }
     .attachment.link { justify-content: flex-start; min-height: 52px; padding: 12px 48px 12px 14px; }
